@@ -24,8 +24,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.test.common.ToastUtil;
+import com.test.decorator_pattern.Beverage;
+import com.test.decorator_pattern.Milk;
+import com.test.decorator_pattern.Mocha;
+import com.test.decorator_pattern.CoffeeBean1;
 import com.test.observer_pattern.ConcreateWatch;
 import com.test.observer_pattern.ConcreateWatched;
 import com.test.observer_pattern.Watch;
@@ -50,6 +55,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     EditText etName;
     @BindView(R.id.fab)
     FloatingActionButton fab;
+    @BindView(R.id.tv_decorator)
+    TextView tvDecorator;
+
     private int backClickTime;
     MyService.Binder binder = null;
     NotificationManager manager;
@@ -67,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //internationalization
         Resources resources = getBaseContext().getResources();
         Configuration configuration = resources.getConfiguration();
-        configuration.locale = new Locale("en","");
+        configuration.locale = new Locale("en", "");
         resources.updateConfiguration(configuration, resources.getDisplayMetrics());//更新配置
         LogUtil.d("%s", configuration.locale.getLanguage());
 
@@ -79,6 +87,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(new Intent(MainActivity.this, A.class));
             }
         });
+
+        //new Decorator
+        Beverage beverage = new CoffeeBean1();
+        beverage = new Milk(beverage);
+        beverage = new Mocha(beverage);
+
+        tvDecorator.setText(beverage.getDescription() + "\n 价格：" + beverage.getPrices());
     }
 
     @Override
@@ -97,11 +112,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return super.onOptionsItemSelected(item);
     }
 
-    @OnClick({R.id.btn_start, R.id.btn_stop, R.id.btn_bind, R.id.btn_unbind, R.id.btn_sync, R.id.btn_notify, R.id.btn_observer, R.id.btn_rxjava_observer,R.id.btn_rxjava})
+    @OnClick({R.id.btn_start, R.id.btn_stop, R.id.btn_bind, R.id.btn_unbind, R.id.btn_sync, R.id.btn_notify, R.id.btn_observer, R.id.btn_rxjava_observer, R.id.btn_rxjava})
     public void onClick(View view) {
         Intent intent = new Intent(this, MyService.class);
         switch (view.getId()) {
             case R.id.btn_start:
+                Log.d(TAG, "start service");
                 startService(new Intent(this, MyService.class));
                 break;
             case R.id.btn_stop:
@@ -159,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn_rxjava:
                 Intent intent1 = new Intent(this, RxJavaActivity.class);
-                intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent1);
                 break;
         }

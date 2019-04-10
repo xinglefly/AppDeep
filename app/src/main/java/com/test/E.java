@@ -20,7 +20,6 @@ public class E extends Activity implements View.OnClickListener {
 
     ProgressBar progressBar;
 
-    /*
     Handler myHandler = new Handler();
     int i = 0;
     Runnable run = new Runnable() {
@@ -30,7 +29,7 @@ public class E extends Activity implements View.OnClickListener {
             Log.d(TAG,"---------"+i);
             myHandler.postDelayed(run, 3000);
         }
-    };*/
+    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,13 +46,13 @@ public class E extends Activity implements View.OnClickListener {
         switch (view.getId()) {
             case R.id.btn_thread:
                 Log.d(TAG,"start runable");
-//                myHandler.post(run);
-                updateHandler.post(updateRunnable);
+                myHandler.post(run);
+//                updateHandler.post(updateRunnable);
                 break;
             case R.id.btn_end:
                 Log.d(TAG,"stop runable");
-//                myHandler.removeCallbacks(run);
-                updateHandler.removeCallbacks(updateRunnable);
+                myHandler.removeCallbacks(run);
+//                updateHandler.removeCallbacks(updateRunnable);
                 break;
             case R.id.btn_open_f:
                 startActivity(new Intent(this, F.class));

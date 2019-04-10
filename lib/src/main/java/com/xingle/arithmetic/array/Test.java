@@ -22,7 +22,7 @@ public class Test {
         array.delete(2);
 
         array.display();
-//        array.sort();
-//        array.insert(15);
+        array.sort();
+        array.insert(15);
     }
 }

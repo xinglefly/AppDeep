@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingStart="@dimen/fab_margin">
 
     <TextView
         android:id="@+id/tv_text"
@@ -11,7 +13,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="测试指令重排"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
 
     <Button
         android:id="@+id/btn_a"
@@ -19,7 +22,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="A"
-        app:layout_constraintTop_toBottomOf="@id/tv_text" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_text"
+        tools:ignore="MissingConstraints" />
 
     <Button
         android:id="@+id/btn_b"
@@ -27,7 +33,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="B"
-        app:layout_constraintTop_toBottomOf="@id/btn_a" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_a"
+        tools:ignore="MissingConstraints" />
 
     <Button
         android:id="@+id/btn_c"
@@ -35,7 +43,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="C"
-        app:layout_constraintTop_toBottomOf="@id/btn_b" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_b"
+        tools:ignore="MissingConstraints" />
 
     <Button
         android:id="@+id/btn_d"
@@ -43,7 +53,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="D"
-        app:layout_constraintTop_toBottomOf="@id/btn_c" />
+        app:layout_constraintTop_toBottomOf="@id/btn_c"
+        tools:ignore="MissingConstraints" />
 
     <Button
         android:id="@+id/btn_e"
@@ -51,22 +62,25 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="E"
-        app:layout_constraintTop_toBottomOf="@id/btn_d" />
+        app:layout_constraintTop_toBottomOf="@id/btn_d"
+        tools:ignore="MissingConstraints" />
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/btn_start_thread"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:text="开启线程" />
+        android:text="开启线程"
+        app:layout_constraintBottom_toBottomOf="@id/btn_e"
+        tools:ignore="MissingConstraints" />
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/btn_stop_thread"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_start_thread"
-        android:text="关闭线程" />
+        android:layout_marginStart="@dimen/fab_margin"
+        android:text="关闭线程"
+        app:layout_constraintBottom_toBottomOf="@id/btn_e"
+        app:layout_constraintLeft_toRightOf="@id/btn_start_thread"
+        tools:ignore="MissingConstraints" />
 
 </android.support.constraint.ConstraintLayout>

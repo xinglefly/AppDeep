@@ -9,15 +9,32 @@
     tools:ignore="MissingConstraints"
     tools:showIn="@layout/activity_main">
 
+    <TextView
+        android:id="@+id/tv_application"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="获取当前ApplicationID："
+        android:textColor="@android:color/holo_red_dark" />
+
     <EditText
         android:id="@+id/et_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
+        android:text="被反编译篡改的APP"
         app:layout_constraintBottom_toBottomOf="parent"
+        android:paddingStart="80px"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btn_app"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="start_app"
+        app:layout_constraintTop_toBottomOf="@id/tv_application" />
 
 
     <Button
@@ -26,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="start_service"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/btn_app" />
 
 
     <Button
@@ -100,6 +117,14 @@
         android:layout_marginTop="10dp"
         android:text="装饰者设计模式"
         app:layout_constraintTop_toBottomOf="@id/btn_rxjava" />
+
+    <Button
+        android:id="@+id/btn_intentservice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="intent service"
+        app:layout_constraintTop_toBottomOf="@id/tv_decorator" />
 
 
 </android.support.constraint.ConstraintLayout>

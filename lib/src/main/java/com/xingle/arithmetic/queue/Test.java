@@ -18,6 +18,8 @@ public class Test {
         queue.add(22);
         queue.add(1);
 
+        System.out.println("arr:"+queue.arr.length);
+        System.out.println(queue.elements);
         System.out.println(queue.isEmpty());
         System.out.println(queue.isFull());
         System.out.println(queue.peek());
@@ -27,6 +29,7 @@ public class Test {
             System.out.print(queue.remove()+",");
         }
 
+        System.out.println();
         System.out.printf("%d,%d,%d,%d,",queue.arr.length,queue.elements,queue.front,queue.end);
         System.out.println("循环队列");
         queue.add(8);

@@ -13,8 +13,9 @@ import java.util.List;
 public class MyApplication extends Application {
 
     private static MyApplication instance;
+    public static String applicationId;
 
-    public static MyApplication getInstance(){
+    public static MyApplication getInstance() {
         return instance;
     }
 
@@ -24,15 +25,16 @@ public class MyApplication extends Application {
         instance = this;
         LogUtil.init(true);
 
-        LogUtil.d("progress: %s",android.os.Process.myPid());
+        LogUtil.d("progress: %s", android.os.Process.myPid());
         getProcessName();
     }
 
     private void getProcessName() {
         ActivityManager manager = (ActivityManager) getBaseContext().getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningAppProcessInfo> processes = manager.getRunningAppProcesses();
-        for (ActivityManager.RunningAppProcessInfo info :processes) {
-            LogUtil.d("run--> :%s",info.processName);
+        for (ActivityManager.RunningAppProcessInfo info : processes) {
+            LogUtil.d("run--> :%s, %d, %d", info.processName, info.pid, info.uid);
+            applicationId = info.processName;
         }
     }
 }

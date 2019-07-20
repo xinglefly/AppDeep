@@ -56,7 +56,6 @@ public class MyQueue {
         }
         elements--;
         return value;
-
     }
 
     public boolean isEmpty() {

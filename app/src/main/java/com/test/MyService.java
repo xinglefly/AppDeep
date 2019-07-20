@@ -19,6 +19,11 @@ public class MyService extends Service {
         return new Binder();
     }
 
+    @Override
+    public boolean onUnbind(Intent intent) {
+        return super.onUnbind(intent);
+    }
+
     public class Binder extends android.os.Binder {
 
         public void setData(String data) {

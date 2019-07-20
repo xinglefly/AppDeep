@@ -16,6 +16,8 @@ public class LinkList {
         Node node = new Node(value);
         node.next = first;
         first = node;
+        System.out.println(first.data);
+        System.out.println(first.next.data);
     }
 
     public Node delteFirst() {

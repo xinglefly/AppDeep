@@ -53,6 +53,8 @@
             android:name=".ExternalService"
             android:enabled="true"
             android:exported="true"/>
+
+        <service android:name=".TestService"/>
     </application>
 
 </manifest>

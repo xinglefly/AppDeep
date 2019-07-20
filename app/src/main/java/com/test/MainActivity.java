@@ -1,5 +1,6 @@
 package com.test;
 
+import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
@@ -13,6 +14,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Process;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
@@ -25,6 +27,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.test.common.ToastUtil;
 import com.test.decorator_pattern.Beverage;
@@ -46,7 +49,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, ServiceConnection {
+import static java.lang.Thread.sleep;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     @BindView(R.id.toolbar)
@@ -57,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     FloatingActionButton fab;
     @BindView(R.id.tv_decorator)
     TextView tvDecorator;
+    @BindView(R.id.tv_application)
+    TextView tvApplicationId;
 
     private int backClickTime;
     MyService.Binder binder = null;
@@ -88,12 +95,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
+        //get ApplicationId
+        tvApplicationId.setText("获取当前ApplicationID相关信息：\n" + "当前进程： " + android.os.Process.myPid()
+                + "\n ApplicationID :  " + MyApplication.applicationId
+                + "\n 应用名称：" + MyApplication.getInstance().getApplicationInfo().className);
+
         //new Decorator
         Beverage beverage = new CoffeeBean1();
         beverage = new Milk(beverage);
         beverage = new Mocha(beverage);
 
         tvDecorator.setText(beverage.getDescription() + "\n 价格：" + beverage.getPrices());
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+//        ToastUtil.showToast("切换到后台");
+//        LogUtil.d("TestAPP---> onPause");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        ToastUtil.showToast("切换到前台");
     }
 
     @Override
@@ -112,22 +137,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return super.onOptionsItemSelected(item);
     }
 
-    @OnClick({R.id.btn_start, R.id.btn_stop, R.id.btn_bind, R.id.btn_unbind, R.id.btn_sync, R.id.btn_notify, R.id.btn_observer, R.id.btn_rxjava_observer, R.id.btn_rxjava})
+    @OnClick({R.id.btn_app, R.id.btn_start, R.id.btn_stop, R.id.btn_bind, R.id.btn_unbind, R.id.btn_sync, R.id.btn_notify, R.id.btn_observer, R.id.btn_rxjava_observer, R.id.btn_rxjava, R.id.btn_intentservice})
     public void onClick(View view) {
         Intent intent = new Intent(this, MyService.class);
         switch (view.getId()) {
+            case R.id.btn_app:
+                ComponentName cn = new ComponentName("com.test1", "com.test.MainActivity");
+                intent.setComponent(cn);
+                startActivity(intent);
+                break;
             case R.id.btn_start:
                 Log.d(TAG, "start service");
-                startService(new Intent(this, MyService.class));
+                startService(intent);
                 break;
             case R.id.btn_stop:
                 stopService(new Intent(this, MyService.class));
                 break;
             case R.id.btn_bind:
-                bindService(new Intent(this, MyService.class), this, Context.BIND_AUTO_CREATE);
+                bindService(new Intent(this, MyService.class), connection, Context.BIND_AUTO_CREATE);
                 break;
             case R.id.btn_unbind:
-                unbindService(this);
+                unbindService(connection);
                 break;
             case R.id.btn_sync:
                 if (binder != null) {
@@ -135,6 +165,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
             case R.id.btn_notify:
+
                 NotificationCompat.Builder notify = (NotificationCompat.Builder) new NotificationCompat.Builder(this);
                 notify.setSmallIcon(R.mipmap.ic_launcher);
                 notify.setContentTitle("测试");
@@ -178,36 +209,45 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent1);
                 break;
+
+            case R.id.btn_intentservice:
+                startService(new Intent(this, TheIntentService.class));
+                break;
+
         }
     }
 
-    @Override
-    public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-        Log.d(TAG, "onServiceConnected" + componentName + ",," + iBinder.toString());
-        binder = (MyService.Binder) iBinder;
-        binder.getService().setCallback(new MyService.Callback() {
-            @Override
-            public void onChangeData(final String data) {
-                /*MainActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        etName.setText(data);
-                    }
-                });*/
-                Message message = new Message();
-                Bundle bundle = new Bundle();
-                bundle.putString("data", data);
-                message.setData(bundle);
-                handler.sendMessage(message);
-            }
-        });
-    }
 
-    @Override
-    public void onServiceDisconnected(ComponentName componentName) {
-        Log.d(TAG, "onServiceDisconnected");
-        binder = null;
-    }
+    ServiceConnection connection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            Log.d(TAG, "onServiceConnected" + name + ",," + service.toString());
+            binder = (MyService.Binder) service;
+            binder.getService().setCallback(new MyService.Callback() {
+                @Override
+                public void onChangeData(final String data) {
+                    MainActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            etName.setText(data);
+                        }
+                    });
+//                Message message = new Message();
+//                Bundle bundle = new Bundle();
+//                bundle.putString("data", data);
+//                message.setData(bundle);
+//                handler.sendMessage(message);
+                }
+            });
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            Log.d(TAG, "onServiceDisconnected");
+            binder = null;
+        }
+    };
 
 
     Handler handler = new Handler() {
@@ -249,4 +289,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return super.onKeyDown(keyCode, event);
     }
 
+}
+
+class TheIntentService extends IntentService {
+
+    private static final String TAG = TheIntentService.class.getSimpleName();
+
+    public TheIntentService(String name) {
+        super(name);
+    }
+
+    @Override
+    protected void onHandleIntent(@Nullable Intent intent) {
+        Log.d(TAG, "耗时前");
+
+        try {
+            sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        Log.d(TAG, "耗时后");
+
+    }
 }
